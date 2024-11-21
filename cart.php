@@ -1,76 +1,67 @@
 <?php
 session_start();
-include 'db.php';
+include 'header.php';
 
-// Verifica si el carrito tiene elementos
-if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
-    echo '<p class="text-center">Your cart is empty.</p>';
-    exit;
-}
-
-$cart_items = $_SESSION['cart'];
-$books_in_cart = [];
-$total = 0;
-
-// Obtener los detalles de los libros del carrito desde la base de datos
-foreach ($cart_items as $book_id => $quantity) {
-    $query = $conn->prepare("SELECT * FROM books WHERE id = ?");
-    $query->bind_param("i", $book_id);
-    $query->execute();
-    $result = $query->get_result();
-    if ($book = $result->fetch_assoc()) {
-        $book['quantity'] = $quantity;
-        $books_in_cart[] = $book;
-        $total += $book['price'] * $quantity;
-    }
-    $query->close();
-}
+// Verificar si el carrito tiene elementos
+$cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container my-5">
-    <h2 class="text-center mb-4">Shopping Cart</h2>
-    <div class="table-responsive">
+    <h1 class="text-center mb-4">Shopping Cart</h1>
+    <?php if (count($cart) > 0): ?>
         <table class="table table-bordered">
-            <thead class="table-dark">
+            <thead>
                 <tr>
                     <th>Image</th>
                     <th>Title</th>
-                    <th>Author</th>
                     <th>Price</th>
                     <th>Quantity</th>
-                    <th>Total</th>
+                    <th>Subtotal</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($books_in_cart as $book): ?>
+                <?php
+                $total = 0;
+                foreach ($cart as $index => $item): 
+                    // Validar y calcular subtotal
+                    $price = is_numeric($item['price']) ? floatval($item['price']) : 0;
+                    $quantity = is_numeric($item['quantity']) ? intval($item['quantity']) : 0;
+                    $subtotal = $price * $quantity;
+                    $total += $subtotal;
+                ?>
                     <tr>
-                        <td><img src="/Final_Project_Progr_ll/IMG_Libros/<?php echo htmlspecialchars($book['cover_image']); ?>" width="60" alt="<?php echo htmlspecialchars($book['title']); ?>"></td>
-                        <td><?php echo htmlspecialchars($book['title']); ?></td>
-                        <td><?php echo htmlspecialchars($book['author']); ?></td>
-                        <td>$<?php echo number_format($book['price'], 2); ?></td>
-                        <td><?php echo $book['quantity']; ?></td>
-                        <td>$<?php echo number_format($book['price'] * $book['quantity'], 2); ?></td>
+                        <td><img src="/Final_Project_Progr_ll/IMG_Libros/<?php echo htmlspecialchars($item['cover_image']); ?>" width="50" alt="<?php echo htmlspecialchars($item['title']); ?>"></td>
+                        <td><?php echo htmlspecialchars($item['title']); ?></td>
+                        <td>$<?php echo number_format($price, 2); ?></td>
+                        <td><?php echo $quantity; ?></td>
+                        <td>$<?php echo number_format($subtotal, 2); ?></td>
                         <td>
-                            <a href="remove_from_cart.php?id=<?php echo $book['id']; ?>" class="btn btn-danger btn-sm">Remove</a>
+                            <a href="remove_from_cart.php?index=<?php echo $index; ?>" class="btn btn-danger btn-sm">Remove</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
-    </div>
-    <div class="d-flex justify-content-between align-items-center">
-        <h4>Total: $<?php echo number_format($total, 2); ?></h4>
-        <a href="checkout.php" class="btn btn-success">Proceed to Checkout</a>
-    </div>
+        <div class="text-end">
+            <h4>Total: $<?php echo number_format($total, 2); ?></h4>
+        </div>
+    <?php else: ?>
+        <p class="text-center">Your cart is empty.</p>
+    <?php endif; ?>
 </div>
 </body>
 </html>
+
+<?php
+include 'footer.php';
+?>
