@@ -22,7 +22,6 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="genres.php">Genres</a></li>
                 <li class="nav-item"><a class="nav-link" href="topsales.php">Top Sales</a></li>
                 <li class="nav-item"><a class="nav-link" href="cart.php">Cart</a></li>
                 <li class="nav-item"><a class="nav-link" href="order_request.php">Request a Book</a></li> <!-- Enlace para pedir libros no disponibles -->

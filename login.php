@@ -26,13 +26,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
-<head><title>Login</title></head>
+<head>
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 <body>
-    <form action="login.php" method="POST">
-        <input type="text" name="username" required placeholder="Username">
-        <input type="password" name="password" required placeholder="Password">
-        <button type="submit">Login</button>
-    </form>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-3">
+                <h3 class="text-center mb-4">Iniciar Sesión</h3>
+                <form action="login.php" method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Usuario</label>
+                        <input type="text" class="form-control" id="username" name="username" required placeholder="Username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="password" name="password" required placeholder="Password">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                    </div>
+                </form>
+            </div>    
+        </div>    
+    </div>     
 </body>
 </html>
 
